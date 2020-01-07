@@ -23,7 +23,10 @@
     );
 
     //判断是否需要密码并验证
-    if( $ttsArray["key"] != '' && isset($_POST["key"]) && $ttsArray["key"] != $_POST["key"] ){        
+    if( 
+        ($ttsArray["key"] != '' && isset($_POST["key"]) && $ttsArray["key"] != $_POST["key"]) ||
+        ($ttsArray["key"] != '' && !isset($_POST["key"]))
+    ){      
         $tts_result = array('status'=> 'Please Input Right Password', 'path'=>'');
         echo json_encode($tts_result,JSON_UNESCAPED_UNICODE);
         exit();
