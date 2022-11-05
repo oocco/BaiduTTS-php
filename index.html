@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Baidu TTS!</title>
+    <title>WEB TTS!</title>
 
     <style>
       .right{
@@ -26,71 +26,253 @@
       .download-btn>a{
         color: #fff!important;
       }
+      .config-btn{
+        width: 49%;
+      }
+      .config-btn-right{
+        float: right;
+      }
+      .advanced-config-btn, .advanced-config-btn>p{
+        cursor: pointer;
+      }
+      .advanced-config-btn:hover{
+        color: #007bff;
+      }
     </style>
 
   </head>
   <body>
     <div class="container" id="ttsApp">
-      <h2 class="my-4">Baidu TTS</h2>
+      <div class="d-inline-block"><h2 class="my-4">WEB TTS</h2></div>
+      <div class="d-inline-block" style="float: right;margin-top: 34px;">
+        <select class="custom-select custom-select-sm" v-model="type">
+          <option selected value="0">Baidu</option>
+          <option value="1">Xunfei</option>
+          <option value="2">Azure</option>
+        </select>
+      </div>
       <div class="w-100 bg-light my-4 p-4 shadow">
         <form>
-          <div class="form-group">
-              <textarea class="form-control" cols="30" rows="10" placeholder="Input Text" required="required" maxlength="2048"
-              v-model="ttsData.tex"
+
+          <!-- Baidu Control -->
+          <div class="baid-tts" v-if="type == 0">
+            <div class="form-group">
+                <textarea class="form-control" cols="30" rows="10" placeholder="Input Text" required="required" maxlength="2048"
+                v-model="ttsText"
+                ></textarea>
+            </div>
+            <div class="form-group">
+                <label>Speed</label><label class="spdval right">{{ttsData.spd}}</label>
+                <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.spd">
+            </div>
+            <div class="form-group">
+              <label>Pitch</label><label class="pitval right">{{ttsData.pit}}</label>
+              <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.pit">
+            </div>
+            <div class="form-group">
+              <label>Volume</label><label class="volval right">{{ttsData.vol}}</label>
+              <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.vol">
+            </div>
+            <div class="form-group">
+                <label>Person</label>
+                <select class="custom-select custom-select-sm" v-model="ttsData.per">
+                  <option selected value="0">度小美</option>
+                  <option value="1">度小宇</option>
+                  <option value="3">度逍遥</option>
+                  <option value="4">度丫丫</option>
+                  <option value="5">度小娇</option>
+                  <option value="103">度米朵</option>
+                  <option value="106">度博文</option>
+                  <option value="110">度小童</option>
+                  <option value="111">度小萌</option>
+                </select>
+            </div>
+
+            <div class="text-center advanced-config-btn" data-toggle="tooltip" data-placement="top" title="Advanced Config"
+              v-if="!advancedConfig" 
+              v-on:click="advancedConfig ? advancedConfig=false : advancedConfig=true"
+            ><p>▾</p></div>
+
+            <div class="advanced-config" v-if="advancedConfig">
+              <div class="form-group">
+                <label>Format</label>
+                <select class="custom-select custom-select-sm" v-model="ttsData.aue">
+                  <option selected value="3">mp3</option>
+                  <option value="4">pcm-16k</option>
+                  <option value="5">pcm-8k</option>
+                  <option value="6">wav</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Xunfei Control -->
+          <div class="xunfei-tts" v-if="type == 1">
+            <div class="form-group">
+              <textarea class="form-control" cols="30" rows="10" placeholder="Input Text" required="required" maxlength="2000"
+              v-model="ttsText"
               ></textarea>
+              <div class="form-group">
+                <label>Speed</label><label class="spdval right">{{ttsXunfeiData.business.speed}}</label>
+                <input type="range" class="custom-range" min="0" max="100" v-model="ttsXunfeiData.business.speed">
+              </div>
+              <div class="form-group">
+                <label>Pitch</label><label class="pitval right">{{ttsXunfeiData.business.pitch}}</label>
+                <input type="range" class="custom-range" min="0" max="100" v-model="ttsXunfeiData.business.pitch">
+              </div>
+              <div class="form-group">
+                <label>Volume</label><label class="volval right">{{ttsXunfeiData.business.volume}}</label>
+                <input type="range" class="custom-range" min="0" max="100" v-model="ttsXunfeiData.business.volume">
+              </div>
+              <div class="form-group">
+                <label>Person</label>
+                <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.vcn">
+                  <option selected value="xiaoyan">小燕-甜美女声</option selected>
+                  <option value="aisjiuxu">许久-亲切男生</option>
+                  <option value="aisxping">小萍-知性女生</option>
+                  <option value="aisbabyxu">许小宝-可爱童声</option>
+                  <option value="aisjinger">小婧-情切女声</option>
+                </select>
+              </div>
+              
+              <div class="text-center advanced-config-btn" data-toggle="tooltip" data-placement="top" title="Advanced Config"
+                v-if="!advancedConfig" 
+                v-on:click="advancedConfig ? advancedConfig=false : advancedConfig=true"
+              ><p>▾</p></div>
+              <div class="advanced-config" v-if="advancedConfig">
+                <div class="form-group">
+                  <label>Format</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.aue">
+                    <option selected value="raw">raw</option>
+                    <option value="speex-org-nb;8">speex-8k</option>
+                    <option value="speex-org-wb;8">speex-16k</option>
+                    <option value="speex;7">xunfei-speex-8k</option>
+                    <option value="speex-wb;7">xunfei-speex-16k</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Sampling Rate</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.auf">
+                    <option value="audio/L16;rate=8000">audio/8k</option>
+                    <option selected value="audio/L16;rate=16000">audio/16k</option selected>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Engine</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.ent">
+                    <option value="aisound">Normal</option>
+                    <option selected value="intp65">Chinese</option>
+                    <option value="intp65_en">Enligsh</option>
+                    <option value="mtts">Small Language</option>
+                    <option value="xtts">Optimize</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Background Music</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.bgs">
+                    <option selected value="0">Disabled</option>
+                    <option value="1">Enabled</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Text Encoding</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.tte">
+                    <option value="GB2312">GB2312</option>
+                    <option value="GBK">GBK</option>
+                    <option value="UNICODE">UNICODE</option>
+                    <option value="GB18030">GB18030</option>
+                    <option selected value="UTF8">UTF8</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>English Pronunciation</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.ram">
+                    <option value="0">Word</option>
+                    <option value="1">Letter</option>
+                    <option selected value="2">Auto</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Punctuation</label>
+                  <select class="custom-select custom-select-sm" v-model="ttsXunfeiData.business.rdn">
+                    <option selected value="0">Disabled</option selected>
+                    <option value="1">Enabled</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
           </div>
-          <div class="form-group">
-              <label>Speed</label><label class="spdval right">{{ttsData.spd}}</label>
-              <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.spd">
-          </div>
-          <div class="form-group">
-            <label>Pitch</label><label class="pitval right">{{ttsData.pit}}</label>
-            <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.pit">
-          </div>
-          <div class="form-group">
-            <label>Volume</label><label class="volval right">{{ttsData.vol}}</label>
-            <input type="range" class="custom-range" min="0" max="15" v-model="ttsData.vol">
-          </div>
-          <div class="form-group">
-              <label>Person</label>
-              <select class="custom-select custom-select-sm" v-model="ttsData.per">
-                <option value="0">度小美</option>
-                <option value="1">度小宇</option>
-                <option value="3">度逍遥</option>
-                <option value="4">度丫丫</option>
-                <option value="5">度小娇</option>
-                <option value="103">度米朵</option>
-                <option value="106">度博文</option>
-                <option value="110">度小童</option>
-                <option value="111">度小萌</option>
+
+          <!-- Azure Control -->
+          <div class="azure-tts" v-if="type == 2">
+            <div class="form-group">
+                <textarea class="form-control" cols="30" rows="10" placeholder="Input Text" required="required" maxlength="2048" id="azureText"
+                v-model="ttsText"
+                ></textarea>
+            </div>
+
+            <button type="button" class="btn btn-secondary mb-3 config-btn" 
+            v-on:click="azureAddWaitTime()">Add Break</button>
+            <input type="number" class="btn btn-secondary mb-3 config-btn config-btn-right" required="required" v-model="azureData.waittime" placeholder="Wait Time(ms)">
+            
+            <div class="form-group">
+                <label>Speed</label><label class="spdval right">{{azureData.rate}}</label>
+                <input type="range" class="custom-range" min="0.0" max="1" step="0.1" v-model="azureData.rate">
+            </div>
+            <div class="form-group">
+              <label>Volume</label><label class="volval right">{{azureData.volume}}</label>
+              <input type="range" class="custom-range" min="0" max="100" v-model="azureData.volume">
+            </div>
+
+            
+            <div class="form-group">
+                <label>Person</label>
+                <select class="custom-select custom-select-sm" v-model="azureData.per">
+                  <option v-for="(item, index) in azureList" :value="index" :key="index">{{item.LocalName}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+              <label>StyleList</label>
+              <select class="custom-select custom-select-sm" v-model="azureData.stylelist">
+                <option v-for="item in azureList[azureData.per].StyleList" :value="item" :key="item">{{item}}</option>
               </select>
           </div>
-          <div class="form-group">
-              <label>Format</label>
-              <select class="custom-select custom-select-sm" v-model="ttsData.aue">
-                <option selected value="3">mp3</option>
-                <option value="4">pcm-16k</option>
-                <option value="5">pcm-8k</option>
-                <option value="6">wav</option>
-              </select>
+
+            <div class="text-center advanced-config-btn" data-toggle="tooltip" data-placement="top" title="Advanced Config"
+              v-if="!advancedConfig" 
+              v-on:click="advancedConfig ? advancedConfig=false : advancedConfig=true"
+            ><p>▾</p></div>
+
+            <div class="advanced-config" v-if="advancedConfig">
+              <div class="form-group">
+                <button type="button" class="btn btn-primary mb-3 w-100" 
+            v-on:click="azureGetList()" 
+            v-bind:disabled="!enableSend">GET ALL SPEAKER</button>
+              </div>
+            </div>
+          
           </div>
 
           <div class="form-group">
             <label for="tts_password">Password</label>
-            <input type="password" id="tts_password" class="form-control" placeholder="Empty if no password" v-model:value="ttsData.key">
+            <input type="password" id="tts_password" class="form-control" placeholder="Empty if no password" v-model="password">
           </div>
 
           <button type="button" class="btn btn-primary mb-3 w-100" 
             v-on:click="sendTts()" 
             v-bind:disabled="!enableSend">SUBMIT</button>
-          <button type="button" class="btn btn-secondary mb-3 w-100" 
-            v-on:click="savettsData()">SAVE SETTING</button>
+          <button type="button" class="btn btn-secondary mb-3 config-btn" 
+            v-on:click="savettsData()">SAVE CONFIG</button>
+          <button type="button" class="btn btn-secondary mb-3 config-btn  config-btn-right" 
+            v-on:click="resetttsData()">RESET</button>
           <div class="alert mt-3" role="alert"  v-if="status" v-bind:class="classStatus">
             {{status}}
           </div>
         </form>
+
       </div>
-      
+        
       <div class="w-100 text-center bg-light my-4 p-4 shadow">
         <div>
           <audio id="audioSrc" controls>
@@ -108,208 +290,16 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js" integrity="sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9+4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" crossorigin="anonymous"></script>
+    <script src="./js/jquery-3.4.1.slim.min.js"></script>
+    <script src="./js/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
     <script type="text/javascript" src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
-    <script>
-
-      var ttsApp = new Vue({
-        el: '#ttsApp',
-        data: {
-          ttsData : {
-            tex: '',
-            per: '0',
-            spd: '5',
-            pit: '5',
-            vol: '5',
-            aue: '3',
-            cuid: 'webapi',
-            key: ''
-          },
-          audioUrl: '',
-          enableDownload: false,
-          enableSend: true,
-          status: '',
-          classStatus: 'alert-primary',
-          serverUrl: 'tts-api.php'
-        },
-
-        watch: {
-          ttsData: {
-            handler: function(){
-            this.enableSend = true;
-            },
-            deep: true
-            }
-        },
-        
-        created: function(){
-            this.initializeLcoalStorge();
-        },
-
-        methods: {
-          //载入前获取之前的设置
-          initializeLcoalStorge: function(){
-            (this.getLocalStorage("tts_per") != null) && (this.ttsData.per = this.getLocalStorage("tts_per"));
-            (this.getLocalStorage("tts_spd") != null) && (this.ttsData.spd = this.getLocalStorage("tts_spd"));
-            (this.getLocalStorage("tts_pit") != null) && (this.ttsData.pit = this.getLocalStorage("tts_pit"));
-            (this.getLocalStorage("tts_vol") != null) && (this.ttsData.vol = this.getLocalStorage("tts_vol"));
-            (this.getLocalStorage("tts_aue") != null) && (this.ttsData.aue = this.getLocalStorage("tts_aue"));
-            (this.getLocalStorage("tts_key") != null) && (this.ttsData.key = this.getLocalStorage("tts_key"));
-          },
-
-          //储存设置
-          setLocalStorage: function(name_in, value_in){
-              localStorage.setItem(name_in, value_in);
-          },
-          getLocalStorage: function(name_in){
-              return localStorage.getItem(name_in);
-          },
-
-          savettsData: function(){
-            this.setLocalStorage('tts_per', this.ttsData.per);
-            this.setLocalStorage('tts_spd', this.ttsData.spd);
-            this.setLocalStorage('tts_pit', this.ttsData.pit);
-            this.setLocalStorage('tts_vol', this.ttsData.vol);
-            this.setLocalStorage('tts_aue', this.ttsData.aue);
-            this.setLocalStorage('tts_key', this.ttsData.key);
-            this.classStatus = "alert-success";
-            this.status = "Save Success";
-          },
-
-          //重新载入音频
-          reloadAudio: function(){
-            let audio = document.getElementById('audioSrc');
-            audio.load();
-            audio.play();
-          },
-
-          //send ajax request
-          ajaxRequest: function(uri, n){
-            let _this = this;
-            axios.post(uri, n)
-            .then(function(response){
-              if('path' in response.data && response.data.path != ''){
-                let ext = response.data.path.substr(-3, 3);
-                if(ext == 'mp3' || ext == 'wav' || ext == 'pcm'){
-                  _this.audioUrl = response.data.path;
-                  _this.reloadAudio();
-
-                  _this.classStatus = "alert-success";
-                  _this.status = response.data.status;
-                  _this.enableSend = false;
-                  _this.enableDownload = true;
-
-                }else if(ext == 'txt'){
-                  _this.classStatus = "alert-warning";
-                  _this.status = "Error, Check Log";
-                  _this.enableSend = true;
-                  _this.enableDownload = false;
-                }
-              }else{
-                _this.classStatus = "alert-warning";
-                _this.status = response.data.status;
-                _this.enableSend = true;
-                _this.enableDownload = false;
-              }
-            })
-            .catch(function(error){
-                console.log(error);
-                _this.classStatus = "alert-danger";
-                _this.status = "Error, Check Network or Server";
-                _this.enableSend = true;
-                _this.enableDownload = false;
-            })
-          },
-
-          //send tts data
-          sendTts: function(){
-            this.status = "";
-            if(this.ttsData.tex == ''){
-              this.classStatus = "alert-danger";
-              this.status = "Must Input Text";
-              return;
-            }
-            if(this.enableSend){
-              this.enableSend = false;
-              let n = new FormData;
-              n.append("tex", this.ttsData.tex);
-              n.append("per", this.ttsData.per);
-              n.append("spd", this.ttsData.spd);
-              n.append("pit", this.ttsData.pit);
-              n.append("vol", this.ttsData.vol);
-              n.append("aue", this.ttsData.aue);
-              n.append("cuid", this.ttsData.cuid);
-              n.append("key", this.ttsData.key);
-              this.ajaxRequest(this.serverUrl, n);
-              
-              //setTimeout(() => {
-              //  this.enableSend = true;
-              //}, 1000);
-            }
-          },
-
-          //Download File and Rename
-          getBlob: function(url, cb){
-            let xhr = new XMLHttpRequest()
-            xhr.open('GET', url, true);
-            xhr.responseType = 'blob';
-            xhr.onload = function() {
-              if (xhr.status === 200) {
-                cb(xhr.response);
-              }
-            };
-            xhr.send();
-          },
-          saveAs: function(blob, filename){
-            if (window.navigator.msSaveOrOpenBlob) {
-                navigator.msSaveBlob(blob, filename);
-            }else{
-              let link = document.createElement('a');
-              let body = document.querySelector('body');
-              link.href = window.URL.createObjectURL(blob);
-              link.download = filename;
-              // fix Firefox
-              link.style.display = 'none';
-              body.appendChild(link);
-              link.click();
-              body.removeChild(link);
-              window.URL.revokeObjectURL(link.href);
-            };
-          },
-          download: function(url, filename) {
-            let _this = this;
-            this.getBlob(url, function(blob) {
-              _this.saveAs(blob, filename);
-            });
-          },
-
-          //Download Audio
-          downloadAudio: function(){
-            if(this.enableDownload){
-              let fname = '';
-              if(this.ttsData.tex.length > 40){
-                fname = this.ttsData.tex.substr(0, 30) + '...' + this.ttsData.tex.substr(-10, 10)  + this.audioUrl.substr(-4, 4);
-              }else{
-                fname = this.ttsData.tex.substr(0, 40) + this.audioUrl.substr(-4, 4);
-              }
-              this.download(this.audioUrl , fname);
-            }
-          }
-        }
-
-      })
-
-      //get client ip address
-      ttsApp.ttsData.cuid = returnCitySN["cip"];
-
-      //$('#spd').bind('input propertychange', function() {
-      //    $('.spdval').html($(this).val());
-      //});
-      
-    </script>
+    <script src="js/hmac-sha256.js"></script>
+    <script src="js/enc-base64-min.js"></script>
+    <script src="js/base64js.js"></script>
+    <script src="js/pcm-player.min.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>

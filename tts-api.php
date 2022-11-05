@@ -3,8 +3,8 @@
     define('DEMO_CURL_VERBOSE', false);
 
     //授权KEY，自行填写
-    $apiKey = "***";
-    $secretKey = "***";
+    $apiKey = "***********";  //your apiKey
+    $secretKey = "*************";  //your secretKey
 
     //转语音参数
     // 下载的文件格式, 3：mp3(default) 4： pcm-16k 5： pcm-8k 6. wav
@@ -26,7 +26,7 @@
     if( 
         ($ttsArray["key"] != '' && isset($_POST["key"]) && $ttsArray["key"] != $_POST["key"]) ||
         ($ttsArray["key"] != '' && !isset($_POST["key"]))
-    ){      
+    ){        
         $tts_result = array('status'=> 'Please Input Right Password', 'path'=>'');
         echo json_encode($tts_result,JSON_UNESCAPED_UNICODE);
         exit();
