@@ -1,3 +1,6 @@
+20221106:
+添加azure tts和xunfei tts支持
+
 # baidutts-php
 
 百度语音合成，功能如界面显示:
